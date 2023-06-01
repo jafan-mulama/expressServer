@@ -1,5 +1,5 @@
-import * as express from 'express';
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import axios from 'axios';
 
 const app = express();
 
@@ -20,24 +20,57 @@ app.get('/about', (req: Request, res: Response) => {
 });
 
 // Route: Users
-app.get('/users', (req: Request, res: Response) => {
-  // Simulated data
-  const users = [
-    { id: 1, name: 'John' },
-    { id: 2, name: 'Jane' },
-    { id: 3, name: 'Bob' },
-  ];
+app.get('/users', async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/users');
+    const users = response.data;
 
-  res.json(users);
+    // Generate HTML table
+    let table = `
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>User Name</th>
+          <th>Email</th>
+          <th>Address</th>
+        
+        </tr>`;
+
+    for (const user of users) {
+      table += `
+        <tr>
+          <td>${user.id}</td>
+          <td>${user.name}</td>
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}
+              ${user.address.geo.lat}, ${user.address.geo.lng}
+          </td>
+         
+        </tr>`;
+    }
+
+    table += '</table>';
+
+    res.send(table);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Something went wrong');
+  }
 });
 
 // Route: User by ID
-app.get('/users/:id', (req: Request, res: Response) => {
+app.get('/users/:id', async (req: Request, res: Response) => {
   const userId = req.params.id;
-  // Simulated data
-  const user = { id: userId, name: 'User ' + userId };
-
-  res.json(user);
+  try {
+    const response = await axios.get(`https://jsonplaceholder.typicode.com/users/${userId}`);
+    const user = response.data;
+    res.json(user);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Something went wrong');
+  }
 });
 
 // Error handling middleware
