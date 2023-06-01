@@ -35,6 +35,9 @@ To run the Express.js server, you need to follow these steps:
 
 Note: If you make any changes to the `server.ts` file, you need to recompile it using `npx tsc server.ts` and restart the server using `node server.js` to see the changes reflected.
 
+http://127.0.0.1:3000/
+http://127.0.0.1:3000/home
+
 
 The provided code is an example of a basic Express.js server written in TypeScript. Let's go through the code step by step to understand what each part does:
 
